@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "1.0.2"
+flask-restx = "*"
+pytest = "3.8.2"
+pytest-flask = "0.13.0"
+
+[dev-packages]
+pylint = "2.1.1"
+
+[requires]
+python_version = "3.6"
