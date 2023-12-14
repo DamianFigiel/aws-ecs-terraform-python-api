@@ -58,3 +58,18 @@ variable "github_account" {
   type        = string
   description = "Github account name"
 }
+
+variable "owner" {
+  type = string
+  description = "Owner of the infrastructure"
+}
+
+variable "environment" {
+  type = string
+  description = "Environment of the infrastructure"
+}
+
+variable "cost-center" {
+  type = string
+  description = "Cost center of the infrastructure"
+}

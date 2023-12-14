@@ -9,6 +9,9 @@ resource "random_integer" "rand" {
 
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "codepipeline-${var.aws_region}-${var.project}-${random_integer.rand.result}"
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-s3-bucket"
+  })
 }
 
 resource "aws_s3_bucket_policy" "s3_bucket_policy" {
@@ -49,11 +52,17 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy" {
 
 resource "aws_codecommit_repository" "code_commit_repository" {
   repository_name = "pipeline-files"
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-pipeline-files"
+  })
 }
 
 resource "aws_codedeploy_app" "code_deploy_application" {
   name             = "${var.project}-app"
   compute_platform = "ECS"
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-app"
+  })
 }
 
 resource "aws_codedeploy_deployment_group" "code_deploy_deployment_group" {
@@ -103,6 +112,10 @@ resource "aws_codedeploy_deployment_group" "code_deploy_deployment_group" {
       }
     }
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-dg"
+  })
 }
 
 resource "aws_codepipeline" "code_pipeline_pipeline" {
@@ -171,6 +184,10 @@ resource "aws_codepipeline" "code_pipeline_pipeline" {
       run_order = 1
     }
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-pipeline"
+  })
 }
 
 resource "aws_cloudwatch_event_rule" "events_rule" {

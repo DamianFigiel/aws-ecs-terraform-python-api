@@ -13,8 +13,6 @@ terraform {
 }
 
 ##################################################################################
-#TODO: tags
-#TODO: variables
-#TODO: change configuration of image to have more tags then just latest!!!  https://stackoverflow.com/questions/31963525/is-it-possible-for-image-to-have-multiple-tags
+#TODO app and taskdef to repo + how to upload them with aws cli
+#TODO: Readme
 
-#TODO: Try now, should be good after updating userdata

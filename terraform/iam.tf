@@ -26,7 +26,7 @@ resource "aws_iam_role" "code_pipeline_role" {
 }
     EOF
 
-  tags = {}
+tags = local.common_tags
 }
 
 resource "aws_iam_role" "github_upload_images_to_ECR" {
@@ -55,7 +55,7 @@ resource "aws_iam_role" "github_upload_images_to_ECR" {
 }
     EOF
 
-  tags = {}
+  tags = local.common_tags
 }
 
 resource "aws_iam_role" "ecs_code_deploy_role" {
@@ -79,9 +79,7 @@ resource "aws_iam_role" "ecs_code_deploy_role" {
 }
     EOF
 
-  tags = {
-    Name = "ecsCodeDeployRole"
-  }
+tags = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_code_deploy_role_attachment" {
@@ -107,7 +105,7 @@ resource "aws_iam_role" "cloud_watch_events_role" {
 }
     EOF
 
-  tags = {}
+  tags = local.common_tags
 }
 
 resource "aws_iam_role" "ecs_instance_role" {
@@ -128,9 +126,7 @@ resource "aws_iam_role" "ecs_instance_role" {
 }
     EOF
 
-  tags = {
-    Name = "ecsInstanceRole"
-  }
+tags = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "container_policy_attachment" {
@@ -166,9 +162,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 }
     EOF
 
-  tags = {
-    Name = "ecsTaskExecutionRole"
-  }
+tags = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {

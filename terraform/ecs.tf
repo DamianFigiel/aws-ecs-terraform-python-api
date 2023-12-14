@@ -8,6 +8,10 @@ resource "aws_ecr_repository" "ecr_repository" {
 
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = var.cluster_name
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-${var.cluster_name}"
+  })
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -29,6 +33,10 @@ resource "aws_ecs_service" "ecs_service" {
   deployment_controller {
     type = "CODE_DEPLOY"
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-svc"
+  })
 }
 
 resource "aws_ecs_task_definition" "ecs_task_definition" {
@@ -68,8 +76,12 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   requires_compatibilities = [
     "EC2"
   ]
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-task-def"
+  })
 }
 
-# resource aws_service_discovery_http_namespace service_discovery_http_namespace {
-#   name = var.cluster_name
-# }
+resource aws_service_discovery_http_namespace service_discovery_http_namespace {
+  name = var.cluster_name
+}

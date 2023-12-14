@@ -22,15 +22,11 @@ resource "aws_instance" "ec2_instance" {
     EOF
 
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
-  # metadata_options {
-  #   http_endpoint               = "enabled"
-  #   http_put_response_hop_limit = 2
-  #   instance_metadata_tags = "enabled"
-  # }
-  tags = {
-    Name          = "${var.project}-inst-${count.index + 1}"
-    "ecs:cluster" = "${var.cluster_name}"
-  }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-inst-${count.index + 1}"
+    ECS-Cluster = "${var.cluster_name}"
+  })
 }
 
 resource "aws_lb" "elastic_load_balancer" {
@@ -47,6 +43,10 @@ resource "aws_lb" "elastic_load_balancer" {
   }
   enable_http2                     = "true"
   enable_cross_zone_load_balancing = "true"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-lb"
+  })
 }
 
 resource "aws_lb_listener" "elastic_load_balancer_listener_80" {
@@ -58,6 +58,10 @@ resource "aws_lb_listener" "elastic_load_balancer_listener_80" {
     target_group_arn = aws_lb_target_group.elb_target_group_80.arn
     type             = "forward"
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-list-80"
+  })
 }
 
 resource "aws_lb_listener" "elastic_load_balancer_listener_8080" {
@@ -69,14 +73,15 @@ resource "aws_lb_listener" "elastic_load_balancer_listener_8080" {
     target_group_arn = aws_lb_target_group.elb_target_group_8080.arn
     type             = "forward"
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-list-8080"
+  })
 }
 
 resource "aws_security_group" "ec2_security_group" {
   description = "Security Group for ${var.project} Instance"
   name        = "${var.project}-inst-sg"
-  tags = {
-    Name = "${var.project}-inst-sg"
-  }
   vpc_id = module.app.vpc_id
 
   ingress {
@@ -99,14 +104,15 @@ resource "aws_security_group" "ec2_security_group" {
     protocol  = "-1"
     to_port   = 0
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-inst-sg"
+  })
 }
 
 resource "aws_security_group" "security_group_load_balancer" {
   description = "Security Group foe ${var.project} Load Balancer"
   name        = "${var.project}-lb-sg"
-  tags = {
-    Name = "${var.project}-lb-sg"
-  }
   vpc_id = module.app.vpc_id
   ingress {
     cidr_blocks = [
@@ -132,6 +138,10 @@ resource "aws_security_group" "security_group_load_balancer" {
     protocol  = "-1"
     to_port   = 0
   }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-lb-sg"
+  })
 }
 
 resource "aws_lb_target_group" "elb_target_group_80" {
@@ -151,6 +161,10 @@ resource "aws_lb_target_group" "elb_target_group_80" {
 
   vpc_id = module.app.vpc_id
   name   = "target-group-80"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-tg-80"
+  })
 }
 
 resource "aws_lb_target_group" "elb_target_group_8080" {
@@ -169,79 +183,8 @@ resource "aws_lb_target_group" "elb_target_group_8080" {
   target_type = "instance"
   vpc_id      = module.app.vpc_id
   name        = "target-group-8080"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.naming_prefix}-tg-8080"
+  })
 }
-
-
-# resource "aws_network_interface" "EC2NetworkInterface" {
-#     description = "ELB app/${var.project}-lb/cc2fbd847231a9d6"
-#     private_ips = [
-#         "172.31.15.36"
-#     ]
-#     subnet_id = "subnet-0bfb30b8cf2d2523a"
-#     source_dest_check = true
-#     security_groups = [
-#         "${aws_security_group.EC2SecurityGroup2.id}"
-#     ]
-# }
-
-# resource "aws_network_interface" "EC2NetworkInterface2" {
-#     description = ""
-#     private_ips = [
-#         "172.31.5.116"
-#     ]
-#     subnet_id = "subnet-0bfb30b8cf2d2523a"
-#     source_dest_check = true
-#     security_groups = [
-#         "${aws_security_group.EC2SecurityGroup.id}"
-#     ]
-# }
-
-# resource "aws_network_interface" "EC2NetworkInterface3" {
-#     description = ""
-#     private_ips = [
-#         "172.31.28.15"
-#     ]
-#     subnet_id = "subnet-0da0dceeb9d6b442e"
-#     source_dest_check = true
-#     security_groups = [
-#         "${aws_security_group.EC2SecurityGroup.id}"
-#     ]
-# }
-
-# resource "aws_network_interface" "EC2NetworkInterface4" {
-#     description = "ELB app/${var.project}-lb/cc2fbd847231a9d6"
-#     private_ips = [
-#         "172.31.20.143"
-#     ]
-#     subnet_id = "subnet-0da0dceeb9d6b442e"
-#     source_dest_check = true
-#     security_groups = [
-#         "${aws_security_group.EC2SecurityGroup2.id}"
-#     ]
-# }
-
-# resource "aws_network_interface_attachment" "EC2NetworkInterfaceAttachment" {
-#     network_interface_id = "eni-020b58f237f37b6f1"
-#     device_index = 0
-#     instance_id = "i-0f25a84c12cb4f24a"
-# }
-
-# resource "aws_network_interface_attachment" "EC2NetworkInterfaceAttachment2" {
-#     network_interface_id = "eni-0216581e6c9323004"
-#     device_index = 0
-#     instance_id = "i-0f3d8e6019c2fee2a"
-# }
-
-
-
-# resource "aws_lb_target_group_attachment" "nginx1" {
-#   target_group_arn = aws_lb_target_group.nginx.arn
-#   target_id        = aws_instance.nginx1.id
-#   port             = 80
-# }
-
-# resource "aws_lb_target_group_attachment" "nginx2" {
-#   target_group_arn = aws_lb_target_group.nginx.arn
-#   target_id        = aws_instance.nginx2.id
-#   port             = 80
-# }
