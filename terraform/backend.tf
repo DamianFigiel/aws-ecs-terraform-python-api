@@ -11,8 +11,3 @@ terraform {
     dynamodb_table = "dynamodb-terraform-remote-state-lock"
   }
 }
-
-##################################################################################
-#TODO app and taskdef to repo + how to upload them with aws cli
-#TODO: Readme
-

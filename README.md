@@ -18,7 +18,7 @@ Complete solution to deploy API build into Docker image to AWS infrastructure cr
 - Create AWS S3 bucket and AWS DynamoDB table to be used for Terraform State (https://developer.hashicorp.com/terraform/language/settings/backends/s3)
 - Put your S3, DynamoDB names and AWS region in `./terraform/backend.tf`
 
- -------------
+----------------- CONTINUE HERE -----------------
 # Step by step
 1. Deploy infra
 2. Push pipeline files

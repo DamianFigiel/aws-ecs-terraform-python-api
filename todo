@@ -1,0 +1,5 @@
+- add unprivileged user to Dockerfile
+- automate terraform commands in Github Actions workflow
+- add pipeline files to CodeCommit repository with automated AWS CLI call 
+- add tests execution in CI/CD process
+- update README
